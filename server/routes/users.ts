@@ -1,5 +1,6 @@
 import express from 'express';
 import User from '../models/User.js';
+import type { AuthenticatedRequest } from '../auth.js';
 
 const router = express.Router();
 
@@ -15,9 +16,18 @@ router.post('/', async (req, res) => {
 
 router.post('/sync', async (req, res) => {
   try {
+    const authenticatedRequest = req as AuthenticatedRequest;
     const user = await User.findOneAndUpdate(
-      { uid: req.body.uid },
-      { $set: req.body },
+      { uid: authenticatedRequest.firebaseUser?.uid },
+      {
+        $set: {
+          uid: authenticatedRequest.firebaseUser?.uid,
+          displayName: authenticatedRequest.firebaseUser?.name || req.body.displayName,
+          photoURL: authenticatedRequest.firebaseUser?.picture || req.body.photoURL,
+          email: authenticatedRequest.firebaseUser?.email || req.body.email,
+          dailyGoal: req.body.dailyGoal,
+        },
+      },
       { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true }
     );
     res.json(user);
@@ -44,6 +54,8 @@ router.get('/search', async (req, res) => {
 
 router.get('/:uid', async (req, res) => {
   try {
+    const userId = (req as AuthenticatedRequest).firebaseUser?.uid;
+    if (req.params.uid !== userId) return res.status(403).json({ error: 'Forbidden' });
     const user = await User.findOne({ uid: req.params.uid });
     if (!user) return res.status(404).json({ error: 'User not found' });
     res.json(user);

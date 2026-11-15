@@ -26,7 +26,15 @@ A modern, social book-reading streak app designed to help you and your friends b
 5. Start the frontend in another terminal: `npm run dev`.
 6. Open `http://localhost:3000`.
 
-The app currently uses a local name-and-email profile sign-in, so separate users can create separate profiles without OAuth credentials. This is suitable for development/demo use; production authentication should be replaced with a real identity provider.
+Authentication uses Firebase Google sign-in. Firebase's free Spark plan is sufficient for this app. The frontend sends Firebase ID tokens to the Express API, which verifies them with the Firebase Admin SDK before allowing access to user data.
+
+### Configure Firebase Authentication
+
+1. Create a Firebase project on the free Spark plan.
+2. Enable **Authentication > Sign-in method > Google**.
+3. Register a Web app and add its configuration values to the `VITE_FIREBASE_*` environment variables.
+4. Create a Firebase service account and add its project ID, client email, and private key to the `FIREBASE_*` backend environment variables.
+5. Add your deployed frontend domain under **Authentication > Settings > Authorized domains**.
 
 ## Free Render Deployment
 

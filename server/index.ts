@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './db.js';
+import { requireAuth } from './auth.js';
 
 // Routes
 import userRoutes from './routes/users.js';
@@ -22,16 +23,18 @@ app.use(express.json());
 // Connect to MongoDB
 connectDB();
 
+// Basic health check route
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', message: 'Express backend and MongoDB connection are set up!' });
+});
+
+app.use('/api', requireAuth);
+
 // API Routes
 app.use('/api/users', userRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/rituals', ritualRoutes);
 app.use('/api/logs', logRoutes);
-
-// Basic health check route
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Express backend and MongoDB connection are set up!' });
-});
 
 // Start the server
 app.listen(PORT, () => {
