@@ -13,63 +13,26 @@ A modern, social book-reading streak app designed to help you and your friends b
 ## Tech Stack
 
 - **Frontend:** React 19, Vite, Tailwind CSS v4, Framer Motion.
-- **Backend:** Firebase (Firestore, Authentication).
+- **Backend:** Express, MongoDB, and Mongoose.
 - **Icons:** Lucide React.
 - **Date Handling:** date-fns.
-
-## Firebase Deployment Instructions
-
-To deploy this application to your own Firebase project, follow these steps:
-
-### 1. Create a Firebase Project
-- Go to the [Firebase Console](https://console.firebase.google.com/).
-- Click "Add project" and follow the setup wizard.
-
-### 2. Enable Authentication
-- In the Firebase Console, go to **Build > Authentication**.
-- Click "Get Started".
-- Enable **Google** as a Sign-in provider.
-
-### 3. Create a Firestore Database
-- Go to **Build > Firestore Database**.
-- Click "Create database".
-- Choose a location and start in **Production mode** (we will deploy rules later).
-
-### 4. Configure Your App
-- In the Firebase Console, go to **Project settings** (gear icon).
-- Under "Your apps", click the **Web icon** (</>) to register a new web app.
-- Copy the `firebaseConfig` object.
-- Create a file named `firebase-applet-config.json` in the root of your project and paste the config there:
-  ```json
-  {
-    "apiKey": "YOUR_API_KEY",
-    "authDomain": "YOUR_AUTH_DOMAIN",
-    "projectId": "YOUR_PROJECT_ID",
-    "storageBucket": "YOUR_STORAGE_BUCKET",
-    "messagingSenderId": "YOUR_MESSAGING_SENDER_ID",
-    "appId": "YOUR_APP_ID"
-  }
-  ```
-
-### 5. Deploy Security Rules
-- Copy the contents of `firestore.rules` from this project.
-- In the Firebase Console, go to **Firestore Database > Rules**.
-- Paste the rules and click **Publish**.
-
-### 6. Build and Deploy
-- Install the Firebase CLI: `npm install -g firebase-tools`.
-- Login to Firebase: `firebase login`.
-- Initialize your project: `firebase init`.
-  - Select **Hosting** and **Firestore**.
-  - Choose your existing project.
-  - For Hosting: Set `dist` as your public directory.
-  - For SPA: Configure as a single-page app (Yes).
-- Build the project: `npm run build`.
-- Deploy: `firebase deploy`.
 
 ## Local Development
 
 1. Clone the repository.
 2. Install dependencies: `npm install`.
-3. Start the dev server: `npm run dev`.
-4. Open `http://localhost:3000` in your browser.
+3. Copy `.env.example` to `.env` and set `MONGODB_URI` to a running MongoDB database.
+4. Start the API in one terminal: `npm run dev:server`.
+5. Start the frontend in another terminal: `npm run dev`.
+6. Open `http://localhost:3000`.
+
+The app currently uses a local mock Google sign-in, so no OAuth credentials are required for development.
+
+## Free Render Deployment
+
+1. Create a free MongoDB Atlas M0 cluster and copy its connection string.
+2. In Render, choose **New > Blueprint** and select this repository.
+3. Set `MONGODB_URI` for the `sanctuary-api` service to the Atlas connection string.
+4. Render will deploy the API and static frontend from `render.yaml`.
+
+The free API service may spin down after inactivity, so the first request after a pause can take a few seconds.

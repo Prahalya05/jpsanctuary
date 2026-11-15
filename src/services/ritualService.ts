@@ -22,7 +22,7 @@ export const createRitual = async (ritual: Omit<Ritual, "id" | "streakCount" | "
 export const subscribeToUserRituals = (userId: string, callback: (rituals: Ritual[]) => void) => {
   const fetchRituals = async () => {
     try {
-      const rituals = await apiClient.get(`/rituals?memberId=${userId}`);
+      const rituals = await apiClient.get(`/rituals?userId=${encodeURIComponent(userId)}`);
       callback(rituals);
     } catch (error) {
       handleFirestoreError(error, OperationType.LIST, RITUALS_COLLECTION);

@@ -13,7 +13,7 @@ export default function Setup({ onClose }: { onClose: () => void }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<UserProfile[]>([]);
   const [selectedFriend, setSelectedFriend] = useState<UserProfile | null>(null);
-  const [ritualType, setRitualType] = useState<'same' | 'individual'>('individual');
+  const [ritualType, setRitualType] = useState<'shared' | 'individual'>('individual');
   const [books, setBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [threshold, setThreshold] = useState('20');
@@ -38,10 +38,10 @@ export default function Setup({ onClose }: { onClose: () => void }) {
     setLoading(true);
     try {
       await createRitual({
-        name: ritualType === 'same' ? `Shared: ${selectedBook?.title}` : `Reading with ${selectedFriend.displayName}`,
+        name: ritualType === 'shared' ? `Shared: ${selectedBook?.title}` : `Reading with ${selectedFriend.displayName}`,
         members: [auth.currentUser.uid, selectedFriend.uid],
         modality: ritualType,
-        sharedBookId: ritualType === 'same' ? selectedBook?.id : undefined,
+        sharedBookId: ritualType === 'shared' ? selectedBook?.id : undefined,
         dailyThreshold: parseInt(threshold),
         logTime: reminderTime,
         lastSyncDate: null,

@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: sanctuary-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build:server
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+
+  - type: static
+    name: sanctuary-web
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://sanctuary-api.onrender.com/api
