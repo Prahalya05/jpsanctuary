@@ -10,7 +10,8 @@ services:
       - key: MONGODB_URI
         sync: false
 
-  - type: static_site
+  - type: web
+    runtime: static
     name: sanctuary-web
     buildCommand: npm ci && npm run build
     staticPublishPath: ./dist
