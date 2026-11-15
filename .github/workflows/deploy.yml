@@ -1,12 +1,16 @@
-name: Deploy Frontend to AWS S3
+name: Validate build
 
 on:
   push:
     branches:
-      - main # Change this to your default branch
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  validate:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,23 +26,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build the Vite project
+      - name: Type-check frontend
+        run: npm run lint
+
+      - name: Build frontend
         run: npm run build
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1 # Change to your AWS region
-
-      - name: Deploy to AWS S3
-        run: |
-          # Sync the dist folder to your S3 bucket
-          # Replace YOUR_S3_BUCKET_NAME with your actual bucket name
-          aws s3 sync dist/ s3://YOUR_S3_BUCKET_NAME --delete
-
-      # (Optional) Invalidate CloudFront cache so users see the latest version immediately
-      # - name: Invalidate CloudFront
-      #   run: |
-      #     aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+      - name: Build backend
+        run: npm run build:server
