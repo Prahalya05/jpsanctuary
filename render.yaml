@@ -17,4 +17,4 @@ services:
     staticPublishPath: ./dist
     envVars:
       - key: VITE_API_URL
-        value: https://sanctuary-api.onrender.com/api
+        value: https://sanctuary-api-v9y1.onrender.com/api
