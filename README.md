@@ -26,7 +26,7 @@ A modern, social book-reading streak app designed to help you and your friends b
 5. Start the frontend in another terminal: `npm run dev`.
 6. Open `http://localhost:3000`.
 
-The app currently uses a local mock Google sign-in, so no OAuth credentials are required for development.
+The app currently uses a local name-and-email profile sign-in, so separate users can create separate profiles without OAuth credentials. This is suitable for development/demo use; production authentication should be replaced with a real identity provider.
 
 ## Free Render Deployment
 

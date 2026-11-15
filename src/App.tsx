@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, onAuthStateChanged, auth, loginWithGoogle } from './api';
+import { User, onAuthStateChanged, auth, loginWithEmail } from './api';
 import { syncUserProfile } from './services/userService';
 import Dashboard from './components/Dashboard';
 import Library from './components/Library';
@@ -17,6 +17,9 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<Tab>('home');
   const [showSetup, setShowSetup] = useState(false);
+  const [displayName, setDisplayName] = useState('');
+  const [email, setEmail] = useState('');
+  const [loginError, setLoginError] = useState('');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
@@ -41,6 +44,18 @@ export default function App() {
   }
 
   if (!user) {
+    const handleLogin = (event: React.FormEvent) => {
+      event.preventDefault();
+      const name = displayName.trim();
+      const normalizedEmail = email.trim().toLowerCase();
+      if (!name || !normalizedEmail || !normalizedEmail.includes('@')) {
+        setLoginError('Enter your name and a valid email address.');
+        return;
+      }
+      setLoginError('');
+      loginWithEmail(name, normalizedEmail);
+    };
+
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center">
         <motion.div 
@@ -59,13 +74,32 @@ export default function App() {
               Forge daily rituals, preserve your literary journey, and share the quiet hum of progress with friends.
             </p>
           </div>
-          <button 
-            onClick={loginWithGoogle}
-            className="w-full flex items-center justify-center gap-3 bg-primary text-on-primary py-4 px-6 rounded-xl font-bold hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-primary/20"
-          >
-            <LogIn className="w-5 h-5" />
-            Begin Your Journey
-          </button>
+          <form onSubmit={handleLogin} className="space-y-3 text-left">
+            <input
+              type="text"
+              placeholder="Your name"
+              value={displayName}
+              onChange={(event) => setDisplayName(event.target.value)}
+              className="w-full rounded-xl border border-outline-variant/20 bg-surface-container-low px-4 py-3 outline-none focus:ring-2 focus:ring-primary/20"
+              required
+            />
+            <input
+              type="email"
+              placeholder="Your email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              className="w-full rounded-xl border border-outline-variant/20 bg-surface-container-low px-4 py-3 outline-none focus:ring-2 focus:ring-primary/20"
+              required
+            />
+            {loginError && <p className="text-sm text-red-600">{loginError}</p>}
+            <button
+              type="submit"
+              className="w-full flex items-center justify-center gap-3 bg-primary text-on-primary py-4 px-6 rounded-xl font-bold hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-primary/20"
+            >
+              <LogIn className="w-5 h-5" />
+              Begin Your Journey
+            </button>
+          </form>
         </motion.div>
       </div>
     );

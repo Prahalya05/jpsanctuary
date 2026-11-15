@@ -34,15 +34,17 @@ export const onAuthStateChanged = (authObj: any, callback: (user: User | null) =
   return () => {};
 };
 
-export const loginWithGoogle = () => {
-  // Mock login instead of google
-  const mockUser: User = {
-    uid: 'mock-user-123',
-    email: 'mockuser@example.com',
-    displayName: 'Mock Reader',
-    photoURL: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mock',
+export const loginWithEmail = (displayName: string, email: string) => {
+  const normalizedEmail = email.trim().toLowerCase();
+  const normalizedName = displayName.trim();
+  const uid = `local-${encodeURIComponent(normalizedEmail)}`;
+  const user: User = {
+    uid,
+    email: normalizedEmail,
+    displayName: normalizedName,
+    photoURL: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(normalizedEmail)}`,
   };
-  localStorage.setItem('user', JSON.stringify(mockUser));
+  localStorage.setItem('user', JSON.stringify(user));
   window.dispatchEvent(new Event('auth-change'));
 };
 
